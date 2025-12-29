@@ -1,0 +1,30 @@
+# Godot 4+ specific ignores
+.godot/
+
+# Godot-specific ignores
+*.translation
+
+# Imported textures and samples
+.import/
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# .NET/C# ignores
+bin/
+obj/
+*.user
+
+# IDE ignores
+.idea/
+*.sln.DotSettings.user
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS ignores
+.DS_Store
+Thumbs.db

@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq1r7v5gk2hxe"]
+
+[ext_resource type="Script" path="res://Tank.cs" id="1_tank"]
+
+[node name="Main" type="Node3D"]
+
+[node name="Tank" type="Node3D" parent="."]
+script = ExtResource("1_tank")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 40, 30)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="StatsLabel" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 300.0
+offset_bottom = 100.0
+theme_override_font_sizes/font_size = 24
+text = "Generation: 1
+Time: 0.0s / 45.0s
+Avg Fitness: 0.00"
