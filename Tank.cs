@@ -6,7 +6,8 @@ public partial class Tank : Node3D
 {
     private const int PopulationSize = 30;
     private const float GenerationTime = 45f; // seconds
-    private const float FoodSpawnInterval = 2f; // seconds
+    private const float FoodSpawnInterval = 1.5f; // seconds
+    private const int InitialFoodCount = 10; // food at start of each generation
 
     private List<Fish> _currentGeneration = new List<Fish>();
     private int _generationNumber = 0;
@@ -82,6 +83,12 @@ public partial class Tank : Node3D
 
             AddChild(fish);
             _currentGeneration.Add(fish);
+        }
+
+        // Spawn initial food
+        for (int i = 0; i < InitialFoodCount; i++)
+        {
+            SpawnFood();
         }
     }
 

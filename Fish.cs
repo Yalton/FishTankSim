@@ -7,6 +7,9 @@ public partial class Fish : Node3D
     public int FoodEaten = 0;
     private float _currentSpeed = 0;
     private MeshInstance3D _mesh;
+    private float _wanderAngle = 0;
+    private float _wanderTimer = 0;
+    private const float TankBounds = 24f;
 
     public Fish() { }
 
@@ -54,17 +57,22 @@ public partial class Fish : Node3D
             }
         }
 
+        float targetAngle = Rotation.Y;
+
+        // Check if near edges - turn toward center
+        bool nearEdge = false;
+        var pos = Position;
+        if (Mathf.Abs(pos.X) > TankBounds || Mathf.Abs(pos.Z) > TankBounds)
+        {
+            nearEdge = true;
+            var toCenter = -Position.Normalized();
+            targetAngle = Mathf.Atan2(toCenter.X, toCenter.Z);
+        }
         // Turn toward food if found
-        if (closestFood != null)
+        else if (closestFood != null)
         {
             var toFood = (closestFood.Position - Position).Normalized();
-            var targetAngle = Mathf.Atan2(toFood.X, toFood.Z);
-
-            // Smoothly rotate toward target
-            var currentRotation = Rotation;
-            currentRotation.Y = Mathf.LerpAngle(currentRotation.Y, targetAngle,
-                Genes.TurnSpeed * (float)delta);
-            Rotation = currentRotation;
+            targetAngle = Mathf.Atan2(toFood.X, toFood.Z);
 
             // Check if reached food
             if (closestDist < 1f)
@@ -73,6 +81,24 @@ public partial class Fish : Node3D
                 FoodEaten++;
             }
         }
+        // Wander randomly when no food visible
+        else
+        {
+            _wanderTimer -= (float)delta;
+            if (_wanderTimer <= 0)
+            {
+                _wanderTimer = (float)GD.RandRange(0.5, 2.0);
+                _wanderAngle = Rotation.Y + (float)GD.RandRange(-1.0, 1.0);
+            }
+            targetAngle = _wanderAngle;
+        }
+
+        // Smoothly rotate toward target
+        var currentRotation = Rotation;
+        float turnRate = nearEdge ? Genes.TurnSpeed * 3f : Genes.TurnSpeed;
+        currentRotation.Y = Mathf.LerpAngle(currentRotation.Y, targetAngle,
+            turnRate * (float)delta);
+        Rotation = currentRotation;
 
         // Accelerate to max speed
         _currentSpeed = Mathf.MoveToward(_currentSpeed, Genes.MaxSpeed, 5f * (float)delta);
@@ -81,12 +107,10 @@ public partial class Fish : Node3D
         var forward = -Transform.Basis.Z;
         Position += forward * _currentSpeed * (float)delta;
 
-        // Wrap around tank boundaries
-        var pos = Position;
-        if (pos.X < -25) pos.X = 25;
-        if (pos.X > 25) pos.X = -25;
-        if (pos.Z < -25) pos.Z = 25;
-        if (pos.Z > 25) pos.Z = -25;
+        // Hard clamp to tank boundaries (safety net)
+        pos = Position;
+        pos.X = Mathf.Clamp(pos.X, -TankBounds - 1, TankBounds + 1);
+        pos.Z = Mathf.Clamp(pos.Z, -TankBounds - 1, TankBounds + 1);
         Position = pos;
     }
 }

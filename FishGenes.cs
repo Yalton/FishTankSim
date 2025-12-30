@@ -28,9 +28,9 @@ public class FishGenes
     {
         var rng = new Random();
         return new FishGenes(
-            (float)(rng.NextDouble() * 30 + 10),  // 10-40 units
-            (float)(rng.NextDouble() * 3 + 1),    // 1-4 rad/s
-            (float)(rng.NextDouble() * 6 + 3)     // 3-9 units/s
+            (float)(rng.NextDouble() * 20 + 15),  // 15-35 units (better starting vision)
+            (float)(rng.NextDouble() * 2 + 2),    // 2-4 rad/s (faster turning)
+            (float)(rng.NextDouble() * 4 + 4)     // 4-8 units/s
         );
     }
 }
